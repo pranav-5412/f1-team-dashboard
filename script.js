@@ -15,6 +15,7 @@ const ELI_TYRE_AGE_AT_START = 8;
 const START_LAP = 28;
 const TIME_CAP_SECONDS = 13 * 60 + 42;
 const TRACK_GAP_PER_POSITION = 0.05;
+const SPA_MOTION_PATH = $('#circuitMotionPath').getAttribute('d');
 let elapsedSeconds = 0;
 let lastFrameTime = 0;
 let lastDisplayedSecond = -1;
@@ -105,20 +106,35 @@ function addFieldDots() {
       number.textContent = driver.number;
       marker.append(number);
     }
-    const motion = document.createElementNS(svgNamespace, 'animateMotion');
-    const motionPathReference = document.createElementNS(svgNamespace, 'mpath');
-    const phase = ((0.37 - (driver.position - 4) * TRACK_GAP_PER_POSITION) % 1 + 1) % 1;
-    const lapDuration = driver.lapSeconds / 3;
-    motion.setAttribute('dur', `${lapDuration}s`);
-    motion.setAttribute('begin', `-${(phase * lapDuration).toFixed(2)}s`);
-    motion.setAttribute('repeatCount', 'indefinite');
-    motion.setAttribute('rotate', 'auto');
-    motionPathReference.setAttribute('href', '#circuitMotionPath');
-    motionPathReference.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#circuitMotionPath');
-    motion.append(motionPathReference);
-    marker.append(motion);
+    marker.append(createCarMotion(driver, svgNamespace));
     driver.marker = marker;
     markerLayer.append(marker);
+  });
+}
+
+function createCarMotion(driver, svgNamespace = 'http://www.w3.org/2000/svg') {
+  const motion = document.createElementNS(svgNamespace, 'animateMotion');
+  const motionPathReference = document.createElementNS(svgNamespace, 'mpath');
+  const phase = ((0.37 - (driver.position - 4) * TRACK_GAP_PER_POSITION) % 1 + 1) % 1;
+  const lapDuration = driver.lapSeconds / 3;
+  motion.setAttribute('dur', `${lapDuration}s`);
+  motion.setAttribute('begin', `-${(phase * lapDuration).toFixed(2)}s`);
+  motion.setAttribute('repeatCount', 'indefinite');
+  motion.setAttribute('rotate', 'auto');
+  motionPathReference.setAttribute('href', '#circuitMotionPath');
+  motionPathReference.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#circuitMotionPath');
+  motion.append(motionPathReference);
+  return motion;
+}
+
+function applyCircuitMotion(route) {
+  const trackOverlay = $('#trackOverlay');
+  const motionPath = $('#circuitMotionPath');
+  trackOverlay.setAttribute('viewBox', `0 0 ${route.width} ${route.height}`);
+  motionPath.setAttribute('d', route.d);
+  fieldCars.forEach((driver) => {
+    const previousMotion = driver.marker.querySelector('animateMotion');
+    driver.marker.replaceChild(createCarMotion(driver), previousMotion);
   });
 }
 
@@ -163,10 +179,10 @@ function showCircuitMap(slug = 'live-spa') {
     trackImage.src = liveSpaMap.image;
     trackImage.alt = liveSpaMap.alt;
     trackOverlay.hidden = false;
+    applyCircuitMotion({ width: 550, height: 443.7, d: SPA_MOTION_PATH });
     $('#circuitName').textContent = liveSpaMap.name;
     $('#circuitLength').textContent = liveSpaMap.length;
     $('#mapEyebrow').textContent = 'LIVE RACE MAP · SPA-FRANCORCHAMPS';
-    $('#simulationLabel').textContent = '20 CARS MOVING';
     $('#simulationState').classList.remove('sim-preview');
     movingLegend.forEach((item) => { item.hidden = false; });
     $('#mapFooter').hidden = false;
@@ -181,16 +197,22 @@ function showCircuitMap(slug = 'live-spa') {
   mapArt.classList.add('official-map');
   trackImage.src = circuit.mapUrl;
   trackImage.alt = `Official 2026 Formula 1 circuit diagram for ${circuit.name}; original turn numbers and markings retained`;
-  trackOverlay.hidden = true;
+  const motionRoute = OFFICIAL_CIRCUIT_ROUTES[circuit.slug];
+  if (!motionRoute) {
+    showToast('No racing line found for this circuit yet.');
+    return showCircuitMap();
+  }
+  trackOverlay.hidden = false;
+  applyCircuitMotion(motionRoute);
   $('#circuitName').textContent = circuit.name.split(' · ').slice(1).join(' · ');
   $('#circuitLength').textContent = circuit.length;
   $('#mapEyebrow').textContent = 'OFFICIAL F1 CIRCUIT MAP · 2026';
-  $('#simulationLabel').textContent = 'PREVIEW · FIELD ON SPA';
-  $('#simulationState').classList.add('sim-preview');
-  movingLegend.forEach((item) => { item.hidden = true; });
+  $('#simulationLabel').textContent = '20 CARS · TRACK SYNC';
+  $('#simulationState').classList.remove('sim-preview');
+  movingLegend.forEach((item) => { item.hidden = false; });
   $('#mapFooter').hidden = true;
   $('#cornerLine').hidden = true;
-  $('#turnReadout').innerHTML = `<span class="turn-readout-icon">⌖</span><span><b>${circuit.name} · ${circuit.laps} laps</b><small>Official F1 diagram with published turns and markings. The live race and moving cars remain on Spa.</small></span><a class="map-source-link" href="${circuit.eventUrl}" target="_blank" rel="noreferrer">SOURCE ↗</a>`;
+  $('#turnReadout').innerHTML = `<span class="turn-readout-icon">⌖</span><span><b>${circuit.name} · ${circuit.laps} laps</b><small>Twenty cars follow this official layout's mapped racing line as the field runs.</small></span><a class="map-source-link" href="${circuit.eventUrl}" target="_blank" rel="noreferrer">SOURCE ↗</a>`;
   $('#mapReset').innerHTML = 'BACK TO LIVE SPA <span>↶</span>';
   setMapCredit('Official map', circuit.eventUrl, 'track diagram served by Formula1.com; markings kept as published');
 }
@@ -199,6 +221,9 @@ $('#realTrackMap').addEventListener('load', (event) => {
   const image = event.currentTarget;
   if (image.naturalWidth && image.naturalHeight) {
     $('#mapArt').style.setProperty('--map-aspect', `${image.naturalWidth} / ${image.naturalHeight}`);
+    if (circuitSelect.value !== 'live-spa') {
+      $('#trackOverlay').setAttribute('viewBox', `0 0 ${image.naturalWidth} ${image.naturalHeight}`);
+    }
   }
 });
 
