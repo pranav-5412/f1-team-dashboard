@@ -122,6 +122,95 @@ function addFieldDots() {
   });
 }
 
+const circuitSelect = $('#circuitSelect');
+const liveSpaMap = {
+  name: 'Spa-Francorchamps',
+  length: '7.004 km',
+  image: 'assets/spa-francorchamps-map.svg',
+  alt: 'Spa-Francorchamps track layout with all 19 numbered turns, sectors, and DRS detection zones',
+};
+
+OFFICIAL_F1_CIRCUITS.forEach((circuit) => {
+  const option = document.createElement('option');
+  option.value = circuit.slug;
+  option.textContent = `${circuit.name} · F1 2026`;
+  circuitSelect.append(option);
+});
+
+function setMapCredit(label, url, detail, sourceLabel = 'Formula1.com · 2026') {
+  const credit = $('#mapCredit');
+  credit.replaceChildren(document.createTextNode(`${label}: `));
+  const link = document.createElement('a');
+  link.href = url;
+  link.target = '_blank';
+  link.rel = 'noreferrer';
+  link.textContent = sourceLabel;
+  credit.append(link, document.createTextNode(` · ${detail}`));
+}
+
+function showCircuitMap(slug = 'live-spa') {
+  const circuit = OFFICIAL_F1_CIRCUITS.find((item) => item.slug === slug);
+  const isLiveSpa = !circuit;
+  const mapArt = $('#mapArt');
+  const trackOverlay = $('#trackOverlay');
+  const trackImage = $('#realTrackMap');
+  const movingLegend = $$('.moving-legend');
+
+  if (isLiveSpa) {
+    circuitSelect.value = 'live-spa';
+    mapArt.classList.remove('official-map');
+    mapArt.style.removeProperty('--map-aspect');
+    trackImage.src = liveSpaMap.image;
+    trackImage.alt = liveSpaMap.alt;
+    trackOverlay.hidden = false;
+    $('#circuitName').textContent = liveSpaMap.name;
+    $('#circuitLength').textContent = liveSpaMap.length;
+    $('#mapEyebrow').textContent = 'LIVE RACE MAP · SPA-FRANCORCHAMPS';
+    $('#simulationLabel').textContent = '20 CARS MOVING';
+    $('#simulationState').classList.remove('sim-preview');
+    movingLegend.forEach((item) => { item.hidden = false; });
+    $('#mapFooter').hidden = false;
+    $('#cornerLine').hidden = false;
+    $('#turnReadout').innerHTML = '<span class="turn-readout-icon">⌖</span><span><b>Pick a corner</b><small>Tap a turn marker for the engineer\'s note.</small></span><span class="map-north">N ↑</span>';
+    $('#mapReset').innerHTML = 'RESET VIEW <span>↺</span>';
+    setMapCredit('Map', 'https://commons.wikimedia.org/wiki/File:2022_F1_CourseLayout_Belgium.svg', 'ごひょううべこ · CC BY-SA 4.0', '2022 F1 CourseLayout · Wikimedia Commons');
+    return;
+  }
+
+  circuitSelect.value = circuit.slug;
+  mapArt.classList.add('official-map');
+  trackImage.src = circuit.mapUrl;
+  trackImage.alt = `Official 2026 Formula 1 circuit diagram for ${circuit.name}; original turn numbers and markings retained`;
+  trackOverlay.hidden = true;
+  $('#circuitName').textContent = circuit.name.split(' · ').slice(1).join(' · ');
+  $('#circuitLength').textContent = circuit.length;
+  $('#mapEyebrow').textContent = 'OFFICIAL F1 CIRCUIT MAP · 2026';
+  $('#simulationLabel').textContent = 'PREVIEW · FIELD ON SPA';
+  $('#simulationState').classList.add('sim-preview');
+  movingLegend.forEach((item) => { item.hidden = true; });
+  $('#mapFooter').hidden = true;
+  $('#cornerLine').hidden = true;
+  $('#turnReadout').innerHTML = `<span class="turn-readout-icon">⌖</span><span><b>${circuit.name} · ${circuit.laps} laps</b><small>Official F1 diagram with published turns and markings. The live race and moving cars remain on Spa.</small></span><a class="map-source-link" href="${circuit.eventUrl}" target="_blank" rel="noreferrer">SOURCE ↗</a>`;
+  $('#mapReset').innerHTML = 'BACK TO LIVE SPA <span>↶</span>';
+  setMapCredit('Official map', circuit.eventUrl, 'track diagram served by Formula1.com; markings kept as published');
+}
+
+$('#realTrackMap').addEventListener('load', (event) => {
+  const image = event.currentTarget;
+  if (image.naturalWidth && image.naturalHeight) {
+    $('#mapArt').style.setProperty('--map-aspect', `${image.naturalWidth} / ${image.naturalHeight}`);
+  }
+});
+
+$('#realTrackMap').addEventListener('error', () => {
+  if (circuitSelect.value !== 'live-spa') {
+    showToast('Official map did not load. Returning to the live Spa map.');
+    showCircuitMap();
+  }
+});
+
+circuitSelect.addEventListener('change', () => showCircuitMap(circuitSelect.value));
+
 function updateRaceReadouts() {
   const previousLap = lap;
   lap = Math.min(44, START_LAP + Math.floor(elapsedSeconds / LAP_SECONDS));
@@ -253,6 +342,11 @@ $('#pitPlan').addEventListener('click', () => {
 });
 
 $('#mapReset').addEventListener('click', () => {
+  if (circuitSelect.value !== 'live-spa') {
+    showCircuitMap();
+    showToast('Back to the live Spa map. The field is still moving.');
+    return;
+  }
   $$('.turn.selected').forEach((node) => node.classList.remove('selected'));
   $('#turnReadout').innerHTML = '<span class="turn-readout-icon">⌖</span><span><b>Pick a corner</b><small>Tap a turn marker for the engineer\'s note.</small></span><span class="map-north">N ↑</span>';
   $$('.team-car-dot').forEach((marker) => { marker.style.opacity = '1'; });
