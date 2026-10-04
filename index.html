@@ -4,47 +4,48 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#111a1d" />
-  <title>Apex GP — Spa Race Desk</title>
+  <title>Apex GP — Race Desk</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to race desk</a>
   <div class="shell">
     <header class="topbar">
-      <a class="brand" href="#top" aria-label="Apex GP home"><span class="brand-mark">A</span><span>APEX<span class="brand-light"> / GP</span></span></a>
-      <div class="event-name"><span class="live-dot"></span> RACE DESK <span class="event-divider">/</span> BELGIAN GRAND PRIX</div>
-      <div class="top-actions"><span class="weather-mini"><span>☁</span> 18° <i></i> 24°</span><button class="icon-button" id="soundToggle" aria-label="Toggle focus mode" title="Toggle focus mode">◎</button><button class="menu-button" id="menuButton" aria-expanded="false" aria-label="Open navigation">☰</button></div>
+      <a class="brand" href="#main" aria-label="Apex GP home"><span class="brand-mark">A</span><span>APEX<span class="brand-light"> / GP</span></span></a>
+      <div class="event-name"><span class="live-dot"></span> RACE DESK <span class="event-divider">/</span> <span id="eventName">BELGIAN GRAND PRIX</span></div>
+      <div class="top-actions"><span class="weather-mini"><span id="weatherMiniIcon">☁</span> <span id="weatherMini">18°</span> <i></i> <span id="weatherMiniTrack">26°</span></span><button class="icon-button" id="soundToggle" aria-label="Toggle focus mode" title="Toggle focus mode" aria-pressed="false">◎</button><button class="menu-button" id="menuButton" aria-expanded="false" aria-label="Open navigation">☰</button></div>
     </header>
     <nav class="quick-nav" aria-label="Dashboard sections"><a href="#circuit">Circuit</a><a href="#strategy">Strategy</a><a href="#analytics">Analytics</a><a href="#control">Race control</a></nav>
 
-    <main id="top">
+    <main id="main" tabindex="-1">
       <section class="race-strip" aria-label="Race status">
-        <div class="race-state"><span class="status-pill"><b></b> GREEN FLAG</span><span class="race-label">Belgium <span>—</span> Sunday race</span></div>
-        <div class="race-progress"><span class="mono" id="lapReadout">LAP 28 / 44</span><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span class="mono muted" id="raceClock">13:42 TO 40:00 CAP</span></div>
+        <div class="race-state"><span class="status-pill"><b></b> GREEN FLAG</span><span class="race-label"><span id="raceVenue">Belgium</span> <span>—</span> <span id="raceDate">Sunday, 19 July</span></span></div>
+        <div class="race-progress"><span class="mono" id="lapReadout">LAP 28 / 44</span><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><span class="mono muted" id="raceClock">30:22 TO 78:38 CAP</span></div>
         <button class="advance-button" id="advanceLap" title="Advance the race by one lap">ADVANCE LAP <span>＋</span></button>
       </section>
 
       <div class="page-heading">
-        <div><p class="eyebrow">Sunday, 24 September <span>/</span> Spa-Francorchamps</p><h1>One eye on Eau Rouge.<br /><em>The other on the tyres.</em></h1></div>
-        <div class="heading-note"><span class="note-mark">✳</span><span>Rain chance is 30%.<br /><b>So, naturally, we packed hope.</b></span></div>
+        <div><p class="eyebrow"><span id="heroDate">Sunday, 19 July</span> <span>/</span> <span id="heroCircuit">Spa-Francorchamps</span></p><h1 id="heroLine">One eye on the apex.<br /><em>The other on the tyres.</em></h1></div>
+        <div class="heading-note"><span class="note-mark">✳</span><span>Rain chance is <span id="rainChance">30%</span>.<br /><b>So, naturally, we packed hope.</b></span></div>
       </div>
 
       <section class="driver-row" aria-label="Driver standings">
         <article class="driver-card driver-one active-driver" data-driver="mara">
-          <div class="driver-top"><span class="position">P<span>4</span></span><span class="driver-number">27</span><span class="tyre-chip medium"><i></i> MED</span></div>
-          <div class="driver-main"><div><h2>Mara Voss</h2><p>GAP TO P3 <strong>+2.841</strong></p></div><div class="driver-time"><span>LAST LAP</span><b>1:47.228</b></div></div>
-          <div class="driver-bottom"><span>TYRE AGE <b id="maraAge">12 LAPS</b></span><span>BEST <b>1:46.902</b></span><span class="select-driver">VIEW CAR ↗</span></div>
+          <div class="driver-top"><span class="position">P<span>4</span></span><span class="driver-number">27</span><span class="tyre-chip medium" data-tyre="mara"><i></i> MED</span></div>
+          <div class="driver-main"><div><h2>Mara Voss</h2><p>GAP TO P3 <strong>+2.841</strong></p></div><div class="driver-time"><span>LAST LAP</span><b data-lap="mara">1:47.228</b></div></div>
+          <div class="driver-bottom"><span>TYRE AGE <b id="maraAge">12 LAPS</b></span><span>BEST <b data-best="mara">1:46.902</b></span><span class="select-driver">VIEW CAR ↗</span></div>
         </article>
         <article class="driver-card driver-two" data-driver="eli">
-          <div class="driver-top"><span class="position">P<span>7</span></span><span class="driver-number">63</span><span class="tyre-chip soft"><i></i> SOFT</span></div>
-          <div class="driver-main"><div><h2>Eli Navarro</h2><p>GAP TO P6 <strong>+1.306</strong></p></div><div class="driver-time"><span>LAST LAP</span><b>1:47.591</b></div></div>
-          <div class="driver-bottom"><span>TYRE AGE <b id="eliAge">8 LAPS</b></span><span>BEST <b>1:46.771</b></span><span class="select-driver">VIEW CAR ↗</span></div>
+          <div class="driver-top"><span class="position">P<span>7</span></span><span class="driver-number">63</span><span class="tyre-chip soft" data-tyre="eli"><i></i> SOFT</span></div>
+          <div class="driver-main"><div><h2>Eli Navarro</h2><p>GAP TO P6 <strong>+1.306</strong></p></div><div class="driver-time"><span>LAST LAP</span><b data-lap="eli">1:47.591</b></div></div>
+          <div class="driver-bottom"><span>TYRE AGE <b id="eliAge">8 LAPS</b></span><span>BEST <b data-best="eli">1:46.771</b></span><span class="select-driver">VIEW CAR ↗</span></div>
         </article>
-        <div class="weather-card"><div class="weather-title">SPA, RIGHT NOW <span>LOCAL</span></div><div class="weather-main"><span class="weather-icon">☁</span><strong>18°</strong><span class="weather-unit">AIR</span><span class="weather-sep"></span><strong>26°</strong><span class="weather-unit">TRACK</span></div><div class="weather-details"><span>RAIN <b>30%</b><i class="rain-meter"><i></i></i></span><span>WIND <b>NW 8 km/h</b></span><span>ASPHALT <b>DRY · COOLING</b></span></div></div>
+        <div class="weather-card"><div class="weather-title"><span class="weather-where"><span id="weatherVenue">SPA</span>, RIGHT NOW</span><span class="weather-local">LOCAL</span></div><div class="weather-main"><span class="weather-icon" id="weatherIcon">☁</span><span class="weather-stat"><span class="weather-unit">AIR</span><strong id="weatherAir">18°</strong></span><span class="weather-stat"><span class="weather-unit">TRACK</span><strong id="weatherTrack">26°</strong></span><span class="weather-stat"><span class="weather-unit">RAIN</span><b id="weatherRain">30%</b><i class="rain-meter"><i id="rainMeterFill"></i></i></span><span class="weather-stat"><span class="weather-unit">WIND</span><b id="weatherWind">NW 8 km/h</b></span><span class="weather-stat"><span class="weather-unit">ASPHALT</span><b id="weatherAsphalt">DRY · COOLING</b></span></div></div>
       </section>
 
       <section class="main-grid">
         <article class="panel circuit-panel" id="circuit">
-          <div class="panel-heading circuit-heading"><div><p class="eyebrow" id="mapEyebrow">LIVE RACE MAP · SPA-FRANCORCHAMPS</p><h2><span class="circuit-name" id="circuitName">Spa-Francorchamps</span> <span id="circuitLength">7.004 km</span></h2></div><div class="map-tools"><label class="map-picker"><span>CHOOSE CIRCUIT</span><select id="circuitSelect" aria-label="Choose a circuit map"><option value="live-spa">Spa · live race</option></select></label><button class="text-button" id="mapReset">RESET TO SPA <span>↺</span></button></div></div>
+          <div class="panel-heading circuit-heading"><div><p class="eyebrow" id="mapEyebrow">LIVE RACE MAP · SPA-FRANCORCHAMPS</p><h2><span class="circuit-name" id="circuitName">Spa-Francorchamps</span> <span id="circuitLength">7.004km</span></h2></div><div class="map-tools"><label class="map-picker"><span>CHOOSE CIRCUIT</span><select id="circuitSelect" aria-label="Choose a circuit map"><option value="live-spa">Spa · live race</option></select></label><button class="text-button" id="mapReset">RESET TO SPA <span>↺</span></button></div></div>
           <div class="map-wrap">
             <div class="map-legend"><span class="moving-legend"><i class="legend-line"></i> CIRCUIT</span><span class="moving-legend"><i class="legend-car field-key"></i> FIELD · 18</span><span class="moving-legend"><i class="legend-car car-yellow"></i> VOSS #27</span><span class="moving-legend"><i class="legend-car car-red"></i> NAVARRO #63</span><span class="sim-live" id="simulationState"><i></i><span id="simulationLabel">20 CARS MOVING</span></span></div>
             <div class="map-art" id="mapArt">
@@ -83,18 +84,18 @@
         <aside class="side-stack">
           <article class="panel strategy-panel" id="strategy">
             <div class="panel-heading"><div><p class="eyebrow">THE PLAN (SUBJECT TO WEATHER)</p><h2>Strategy desk</h2></div><span class="plan-badge">PLAN A</span></div>
-            <div class="strategy-driver"><span class="tiny-car yellow">27</span><span>MARA <small>1 STOP</small></span><b>MEDIUM <i class="compound medium-compound"></i></b></div>
-            <div class="stint-visual"><div class="stint-bar medium-bar" style="width:64%"><span>MEDIUM <b>12 laps</b></span></div><div class="stint-bar hard-bar" style="width:36%"><span>HARD <b>planned</b></span></div></div>
-            <div class="strategy-note"><span class="pit-icon">↘</span><span><b>Box window: laps 31–33</b><small>Next stop in <strong id="stopCountdown">3 laps</strong>. Hold position, keep it tidy.</small></span><button id="pitPlan" aria-label="Toggle pit stop plan">✓</button></div>
-            <div class="strategy-driver second-strategy"><span class="tiny-car red">63</span><span>ELI <small>1 STOP</small></span><b>SOFT <i class="compound soft-compound"></i></b></div>
-            <div class="stint-visual"><div class="stint-bar soft-bar" style="width:47%"><span>SOFT <b>8 laps</b></span></div><div class="stint-bar medium-bar" style="width:53%"><span>MEDIUM <b>planned</b></span></div></div>
+            <div class="strategy-driver"><span class="tiny-car yellow">27</span><span>MARA <small>1 STOP</small></span><b><span data-compound="mara">MEDIUM</span> <i class="compound medium-compound" data-compound-dot="mara"></i></b></div>
+            <div class="stint-visual"><div class="stint-bar medium-bar" style="width:0%"><span>MEDIUM <b>0 laps</b></span></div><div class="stint-bar hard-bar" style="width:0%"><span>HARD <b>planned</b></span></div></div>
+            <div class="strategy-note"><span class="pit-icon">↘</span><span><b id="pitWindow">Box window: laps 20–22</b><small class="plan-a-note"><span id="stopLead">Next stop on</span> <strong id="stopCountdown">lap 20</strong>. Hold position, keep it tidy.</small><small class="plan-b-note" hidden><strong>No stop planned.</strong> The opening tyre goes the distance. Ambitious.</small></span><button id="pitPlan" aria-label="Toggle pit stop plan">✓</button></div>
+            <div class="strategy-driver second-strategy"><span class="tiny-car red">63</span><span>ELI <small>1 STOP</small></span><b><span data-compound="eli">SOFT</span> <i class="compound soft-compound" data-compound-dot="eli"></i></b></div>
+            <div class="stint-visual"><div class="stint-bar soft-bar" style="width:0%"><span>SOFT <b>0 laps</b></span></div><div class="stint-bar medium-bar" style="width:0%"><span>MEDIUM <b>planned</b></span></div></div>
             <div class="strategy-foot"><span>TYRE DEG ESTIMATE</span><span>0.08s / lap <b>↗</b></span></div>
           </article>
 
           <article class="panel control-panel" id="control">
             <div class="panel-heading"><div><p class="eyebrow">FIA RACE CONTROL</p><h2>All quiet-ish</h2></div><span class="control-light"><i></i> LIVE</span></div>
-            <div class="control-status"><span class="flag-icon green-flag">▰</span><span><b>Green flag</b><small>Track clear across all sectors</small></span><span class="status-time">LAP 28</span></div>
-            <button class="incident-row" id="incidentToggle" aria-expanded="false"><span class="flag-icon yellow-flag">!</span><span><b>Incident noted</b><small>Turn 9 · car 22, rejoined safely</small></span><span class="incident-chevron">⌄</span></button>
+            <div class="control-status"><span class="flag-icon green-flag">▰</span><span><b>Green flag</b><small>Track clear across all sectors</small></span><span class="status-time" data-lap-badge>LAP 28</span></div>
+            <button class="incident-row" id="incidentToggle" aria-expanded="false"><span class="flag-icon yellow-flag">!</span><span><b>Incident noted</b><small><span id="incidentCorner">Turn 9</span> · car 22, rejoined safely</small></span><span class="incident-chevron">⌄</span></button>
             <div class="incident-detail" id="incidentDetail">No investigation. No debris reported. Everyone may unclench.</div>
             <div class="control-footer"><span>SAFETY CAR <b>—</b></span><span>VSC <b>—</b></span><span>PENALTIES <b>NONE</b></span></div>
           </article>
@@ -109,20 +110,21 @@
           <div class="chart-legend"><span><i class="chart-key yellow-key"></i> VOSS #27</span><span><i class="chart-key red-key"></i> NAVARRO #63</span><span class="chart-mock-note">ILLUSTRATIVE RACE DATA</span></div>
         </article>
         <article class="panel sector-panel">
-          <div class="panel-heading"><div><p class="eyebrow">THE LITTLE BITS ADD UP</p><h2>Sector split</h2></div><span class="sector-live">LAP 28</span></div>
-          <div class="sector-head"><span>DRIVER</span><span>S1 <small>LA SOURCE → RAIDILLON</small></span><span>S2 <small>LES COMBES → FANGNES</small></span><span>S3 <small>STAVELOT → BUS STOP</small></span></div>
+          <div class="panel-heading"><div><p class="eyebrow">THE LITTLE BITS ADD UP</p><h2>Sector split</h2></div><span class="sector-live" data-lap-badge>LAP 28</span></div>
+          <div class="sector-head"><span>DRIVER</span><span>S1 <small id="sector1Name">LA SOURCE → RAIDILLON</small></span><span>S2 <small id="sector2Name">LES COMBES → FAGNES</small></span><span>S3 <small id="sector3Name">STAVELOT → BUS STOP</small></span></div>
           <div class="sector-driver"><span class="sector-driver-name"><i class="chart-key yellow-key"></i> VOSS</span><span class="personal-best">32.441</span><span>41.208</span><span>33.579</span></div>
           <div class="sector-driver"><span class="sector-driver-name"><i class="chart-key red-key"></i> NAVARRO</span><span>32.607</span><span class="personal-best">41.102</span><span>33.882</span></div>
           <div class="sector-best"><span>BEST IN SECTOR</span><span>VOSS <i>−0.166</i></span><span>NAVARRO <i>−0.106</i></span><span>VOSS <i>−0.303</i></span></div>
-          <div class="sector-insight"><span>✳</span><p><b>Voss is gaining in sector 3.</b> Fresh-ish mediums help through the final chicane. Try not to tell her we said “fresh-ish”.</p></div>
+          <div class="sector-insight"><span>✳</span><p id="sectorInsight"><b>Voss is gaining in sector 3.</b> Fresh-ish mediums help through the final chicane. Try not to tell her we said “fresh-ish”.</p></div>
         </article>
       </section>
-      <footer class="page-footer"><span>APEX GP <b>·</b> RACE STRATEGY HQ</span><span>FICTIONAL TEAM <b>·</b> FICTIONAL DATA <b>·</b> VERY REAL SPA WEATHER MOOD</span><span>NO RADIO. JUST VIBES.</span></footer>
+      <footer class="page-footer"><span>APEX GP <b>·</b> RACE STRATEGY HQ</span><span>FICTIONAL TEAM <b>·</b> FICTIONAL DATA <b>·</b> VERY REAL WEATHER MOOD</span><span>NO RADIO. JUST VIBES.</span></footer>
     </main>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
   <script src="circuits-data.js"></script>
   <script src="circuit-routes.js"></script>
+  <script src="race-state.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
