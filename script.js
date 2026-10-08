@@ -187,8 +187,33 @@ function showCircuitMap(slug = 'live-spa') {
     movingLegend.forEach((item) => { item.hidden = false; });
     $('#mapFooter').hidden = false;
     $('#cornerLine').hidden = false;
-    $('#turnReadout').innerHTML = '<span class="turn-readout-icon">⌖</span><span><b>Pick a corner</b><small>Tap a turn marker for the engineer\'s note.</small></span><span class="map-north">N ↑</span>';
-    $('#mapReset').innerHTML = 'RESET VIEW <span>↺</span>';
+
+    const turnReadout = $('#turnReadout');
+    turnReadout.replaceChildren();
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'turn-readout-icon';
+    iconSpan.textContent = '⌖';
+
+    const textSpan = document.createElement('span');
+    const bText = document.createElement('b');
+    bText.textContent = 'Pick a corner';
+    const smallText = document.createElement('small');
+    smallText.textContent = "Tap a turn marker for the engineer's note.";
+    textSpan.append(bText, smallText);
+
+    const northSpan = document.createElement('span');
+    northSpan.className = 'map-north';
+    northSpan.textContent = 'N ↑';
+
+    turnReadout.append(iconSpan, textSpan, northSpan);
+
+    const mapReset = $('#mapReset');
+    mapReset.replaceChildren(
+      document.createTextNode('RESET VIEW '),
+      Object.assign(document.createElement('span'), { textContent: '↺' })
+    );
+
     setMapCredit('Map', 'https://commons.wikimedia.org/wiki/File:2022_F1_CourseLayout_Belgium.svg', 'ごひょううべこ · CC BY-SA 4.0', '2022 F1 CourseLayout · Wikimedia Commons');
     return;
   }
@@ -212,8 +237,36 @@ function showCircuitMap(slug = 'live-spa') {
   movingLegend.forEach((item) => { item.hidden = false; });
   $('#mapFooter').hidden = true;
   $('#cornerLine').hidden = true;
-  $('#turnReadout').innerHTML = `<span class="turn-readout-icon">⌖</span><span><b>${circuit.name} · ${circuit.laps} laps</b><small>Twenty cars follow this official layout's mapped racing line as the field runs.</small></span><a class="map-source-link" href="${circuit.eventUrl}" target="_blank" rel="noreferrer">SOURCE ↗</a>`;
-  $('#mapReset').innerHTML = 'BACK TO LIVE SPA <span>↶</span>';
+
+  const turnReadout = $('#turnReadout');
+  turnReadout.replaceChildren();
+
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'turn-readout-icon';
+  iconSpan.textContent = '⌖';
+
+  const textSpan = document.createElement('span');
+  const bText = document.createElement('b');
+  bText.textContent = `${circuit.name} · ${circuit.laps} laps`;
+  const smallText = document.createElement('small');
+  smallText.textContent = "Twenty cars follow this official layout's mapped racing line as the field runs.";
+  textSpan.append(bText, smallText);
+
+  const sourceLink = document.createElement('a');
+  sourceLink.className = 'map-source-link';
+  sourceLink.href = circuit.eventUrl;
+  sourceLink.target = '_blank';
+  sourceLink.rel = 'noreferrer';
+  sourceLink.textContent = 'SOURCE ↗';
+
+  turnReadout.append(iconSpan, textSpan, sourceLink);
+
+  const mapReset = $('#mapReset');
+  mapReset.replaceChildren(
+    document.createTextNode('BACK TO LIVE SPA '),
+    Object.assign(document.createElement('span'), { textContent: '↶' })
+  );
+
   setMapCredit('Official map', circuit.eventUrl, 'track diagram served by Formula1.com; markings kept as published');
 }
 
@@ -293,7 +346,26 @@ $$('.turn').forEach((turn) => {
     $$('.turn.selected').forEach((node) => node.classList.remove('selected'));
     turn.classList.add('selected');
     const [name, note] = turnNotes[turn.dataset.turn] || [`Turn ${turn.dataset.turn}`, 'Corner note pending. The map says corner; the pit wall agrees.'];
-    $('#turnReadout').innerHTML = `<span class="turn-readout-icon">⌖</span><span><b>Turn ${turn.dataset.turn} · ${name}</b><small>${note}</small></span><span class="map-north">N ↑</span>`;
+
+    const turnReadout = $('#turnReadout');
+    turnReadout.replaceChildren();
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'turn-readout-icon';
+    iconSpan.textContent = '⌖';
+
+    const textSpan = document.createElement('span');
+    const bText = document.createElement('b');
+    bText.textContent = `Turn ${turn.dataset.turn} · ${name}`;
+    const smallText = document.createElement('small');
+    smallText.textContent = note;
+    textSpan.append(bText, smallText);
+
+    const northSpan = document.createElement('span');
+    northSpan.className = 'map-north';
+    northSpan.textContent = 'N ↑';
+
+    turnReadout.append(iconSpan, textSpan, northSpan);
   };
   turn.addEventListener('click', activate);
   turn.addEventListener('keydown', (event) => {
@@ -373,7 +445,27 @@ $('#mapReset').addEventListener('click', () => {
     return;
   }
   $$('.turn.selected').forEach((node) => node.classList.remove('selected'));
-  $('#turnReadout').innerHTML = '<span class="turn-readout-icon">⌖</span><span><b>Pick a corner</b><small>Tap a turn marker for the engineer\'s note.</small></span><span class="map-north">N ↑</span>';
+
+  const turnReadout = $('#turnReadout');
+  turnReadout.replaceChildren();
+
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'turn-readout-icon';
+  iconSpan.textContent = '⌖';
+
+  const textSpan = document.createElement('span');
+  const bText = document.createElement('b');
+  bText.textContent = 'Pick a corner';
+  const smallText = document.createElement('small');
+  smallText.textContent = "Tap a turn marker for the engineer's note.";
+  textSpan.append(bText, smallText);
+
+  const northSpan = document.createElement('span');
+  northSpan.className = 'map-north';
+  northSpan.textContent = 'N ↑';
+
+  turnReadout.append(iconSpan, textSpan, northSpan);
+
   $$('.team-car-dot').forEach((marker) => { marker.style.opacity = '1'; });
   showToast('Map reset. Spa remains stubbornly the same shape.');
 });
