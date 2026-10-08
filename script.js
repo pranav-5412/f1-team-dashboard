@@ -1,3 +1,16 @@
+function escapeHTML(str) {
+  if (typeof str !== 'string') str = String(str);
+  return str.replace(/[&<>"']/g, (m) => {
+    switch (m) {
+      case '&': return '&amp;';
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '"': return '&quot;';
+      case "'": return '&#39;';
+    }
+  });
+}
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -335,9 +348,9 @@ function drawChart(mode) {
   const x = (index) => left + index * ((right - left) / (data.labels.length - 1));
   const points = (values) => values.map((y, i) => `${x(i)},${top + y}`).join(' ');
   const gridLines = [25, 55, 85, 115].map((y) => `<line class="chart-grid" x1="${left}" y1="${y}" x2="${right}" y2="${y}"/>`).join('');
-  const axes = data.labels.map((label, i) => `<text class="chart-axis" text-anchor="middle" x="${x(i)}" y="138">${mode === 'pace' ? `L${label}` : label}</text>`).join('');
-  const markers = (values, className) => values.map((value, i) => `<circle class="${className}" cx="${x(i)}" cy="${top + value}" r="3.5"><title>${mode === 'pace' ? `Lap ${data.labels[i]}` : data.labels[i]}</title></circle>`).join('');
-  $('#chartArea').innerHTML = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${data.title} comparison chart">${gridLines}<polyline class="chart-line-yellow" points="${points(data.a)}"/><polyline class="chart-line-red" points="${points(data.b)}"/>${markers(data.a, 'chart-point-yellow')}${markers(data.b, 'chart-point-red')}${axes}</svg>`;
+  const axes = data.labels.map((label, i) => `<text class="chart-axis" text-anchor="middle" x="${x(i)}" y="138">${mode === 'pace' ? `L${escapeHTML(label)}` : escapeHTML(label)}</text>`).join('');
+  const markers = (values, className) => values.map((value, i) => `<circle class="${className}" cx="${x(i)}" cy="${top + value}" r="3.5"><title>${mode === 'pace' ? `Lap ${escapeHTML(data.labels[i])}` : escapeHTML(data.labels[i])}</title></circle>`).join('');
+  $('#chartArea').innerHTML = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${escapeHTML(data.title)} comparison chart">${gridLines}<polyline class="chart-line-yellow" points="${points(data.a)}"/><polyline class="chart-line-red" points="${points(data.b)}"/>${markers(data.a, 'chart-point-yellow')}${markers(data.b, 'chart-point-red')}${axes}</svg>`;
   $$('.chart-tab').forEach((button) => {
     const selected = button.dataset.chart === mode;
     button.classList.toggle('selected', selected);
