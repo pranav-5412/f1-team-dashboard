@@ -11,6 +11,8 @@ const documentMock = {
     classList: { add: () => {}, remove: () => {}, toggle: () => {} },
     style: { setProperty: () => {}, removeProperty: () => {} },
     setAttribute: () => {},
+    removeAttribute: () => {},
+    removeChild: () => {},
     replaceChildren: () => {},
     append: () => {},
     replaceChild: () => {},
@@ -27,6 +29,9 @@ const documentMock = {
       children: [],
       classList: { add: () => {}, remove: () => {}, toggle: () => {} },
       setAttribute(key, val) { this.attributes[key] = val; },
+      removeAttribute(key) { delete this.attributes[key]; },
+      removeChild() {},
+      replaceChild() {},
       setAttributeNS(ns, key, val) { this.attributes[`${ns}:${key}`] = val; },
       append(child) {
         this.children.push(child);
@@ -45,16 +50,21 @@ const documentMock = {
 
 const context = {
   document: documentMock,
+  window: { matchMedia: () => ({ matches: false, addEventListener: () => {} }) },
   requestAnimationFrame: () => {},
   setTimeout: () => {},
   clearTimeout: () => {},
-  OFFICIAL_F1_CIRCUITS: [],
-  OFFICIAL_CIRCUIT_ROUTES: {},
   module: { exports: {} }
 };
 
+const circuitsCode = fs.readFileSync('./circuits-data.js', 'utf8');
+const routesCode = fs.readFileSync('./circuit-routes.js', 'utf8');
+const raceStateCode = fs.readFileSync('./race-state.js', 'utf8');
 const scriptCode = fs.readFileSync('./script.js', 'utf8');
 vm.createContext(context);
+vm.runInContext(circuitsCode, context);
+vm.runInContext(routesCode, context);
+vm.runInContext(raceStateCode, context);
 vm.runInContext(scriptCode + '\nmodule.exports = { createCarMotion };', context);
 
 const { createCarMotion } = context.module.exports;

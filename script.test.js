@@ -3,6 +3,7 @@ const path = require('path');
 
 const circuitsData = fs.readFileSync(path.resolve(__dirname, './circuits-data.js'), 'utf8');
 const circuitRoutes = fs.readFileSync(path.resolve(__dirname, './circuit-routes.js'), 'utf8');
+const raceStateSource = fs.readFileSync(path.resolve(__dirname, './race-state.js'), 'utf8');
 let scriptContent = fs.readFileSync(path.resolve(__dirname, './script.js'), 'utf8');
 
 scriptContent = scriptContent.replace(/function showToast/g, 'window.showToast = showToast; function showToast');
@@ -11,8 +12,9 @@ describe('showToast', () => {
   beforeEach(() => {
     document.documentElement.innerHTML = fs.readFileSync(path.resolve(__dirname, './index.html'), 'utf8');
     window.requestAnimationFrame = jest.fn();
+    window.matchMedia = jest.fn(() => ({ matches: false, addEventListener: jest.fn() }));
     jest.useFakeTimers();
-    eval(circuitsData + '\n' + circuitRoutes + '\n' + scriptContent);
+    eval(circuitsData + '\n' + circuitRoutes + '\n' + raceStateSource + '\n' + scriptContent);
   });
 
   afterEach(() => {
